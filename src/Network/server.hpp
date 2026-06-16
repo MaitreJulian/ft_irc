@@ -5,10 +5,13 @@
 #include <map>
 
 #include <cstring>
+#include <cstdlib>
 #include <string>
 #include <stdexcept>
 #include <iostream>
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -36,7 +39,7 @@ class Server
 
         Server(int port, const std::string& password);
         ~Server();
-
+        void set_client(int fd, const std::string& buffer);
         void initServer();
         void run();
 
@@ -51,5 +54,8 @@ class Server
 
         void removeClient(int fd);
 };
+
+void send_instructions(int fd);
+void send_welcome_message(int fd);
 
 #endif

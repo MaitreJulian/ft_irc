@@ -11,8 +11,8 @@ class Client
 
         std::string _nickname;
         std::string _username;
-
-        bool _authenticated;
+        bool has_nick;
+        bool has_user;
 
         std::string _buffer;
 

@@ -24,91 +24,16 @@ Server::~Server()
 }
 
 
-void Server::createSocket()
-{
-    _serverFd = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (_serverFd < 0)
-        throw std::runtime_error("socket failed");
-    std::cout << "Server socket created : "
-    << _serverFd
-    << std::endl;
-}
-
-void Server::bindSocket()
-{
-    sockaddr_in addr;
-    
-    std::memset(&addr, 0, sizeof(addr));
-    
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(_port);
-    
-    if (bind(_serverFd, (sockaddr*)&addr, sizeof(addr)) < 0)
-        throw std::runtime_error("bind failed");
-    else
-    {
-        std::cout << "Server socket bound to port "
-        << _port
-        << std::endl;
-    }
-}
-    
-void Server::listenSocket()
-{
-    if (listen(_serverFd, SOMAXCONN) < 0)
-    throw std::runtime_error("listen failed");
-    else
-    {
-        std::cout << "Server is listening"
-        << std::endl;
-    }
-}
-void Server::initServer()
-{
-    createSocket();
-    bindSocket();
-    listenSocket();
-
-    pollfd pfd;
-
-    pfd.fd = _serverFd;
-    pfd.events = POLLIN;
-    pfd.revents = 0;
-
-    _fds.push_back(pfd);
-}
-    
-void Server::run()
-{
-    while (true)
-    {
-        poll(&_fds[0], _fds.size(), -1);
-
-        for (size_t i = 0; i < _fds.size(); i++)
-        {
-            if (!(_fds[i].revents & POLLIN))
-                continue;
-
-            if (_fds[i].fd == _serverFd)
-            {
-                acceptNewClient();
-            }
-            else
-            {
-                receiveData(_fds[i].fd);
-            }
-        }
-    }
-}
-
 void Server::acceptNewClient()
 {
     int clientFd = accept(_serverFd, NULL, NULL);
 
     if (clientFd < 0)
         return;
+    if (fcntl(clientFd, F_SETFL, O_NONBLOCK) == -1)
+    {
+        throw std::runtime_error("fcntl failed");
+    }
 
     Client* client = new Client(clientFd);
 
@@ -122,9 +47,8 @@ void Server::acceptNewClient()
 
     _fds.push_back(pfd);
 
-    std::cout << "New client : "
-              << clientFd
-              << std::endl;
+    std::cout << "New client : " << clientFd << std::endl;
+    send_instructions(clientFd);
 }
 
 void Server::removeClient(int fd)
@@ -156,28 +80,28 @@ void Server::removeClient(int fd)
               << std::endl;
 }
 
-void Server::receiveData(int fd)
+void Server::run()
 {
-    char buffer[512];
-
-    int bytes = recv(fd,
-                     buffer,
-                     sizeof(buffer) - 1,
-                     0);
-
-    if (bytes <= 0)
+    while (true)
     {
-        removeClient(fd);
-        return;
-    }
+        int ret = poll(&_fds[0], _fds.size(), -1);
 
-    buffer[bytes] = '\0';
+        for (size_t i = 0; i < _fds.size(); i++)
+        {
+            if (!(_fds[i].revents & POLLIN))
+                continue;
 
-    std::cout
-        << "Client "
-        << fd
-        << " : "
-        << buffer
+            if (_fds[i].fd == _serverFd)
+            {
+                acceptNewClient();
+            }
+            else
+            {
+                receiveData(_fds[i].fd);
+            }
+        }
+        std::cout << "Poll returned : "
+        << ret
         << std::endl;
+    }
 }
-
