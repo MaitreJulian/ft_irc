@@ -51,8 +51,8 @@ class Server
 
         void acceptNewClient();
         void receiveData(int fd);
-
         void removeClient(int fd);
+        void processClientbuffer(Client *clients);
 };
 
 void send_instructions(int fd);

@@ -88,16 +88,24 @@ void Server::run()
 
         for (size_t i = 0; i < _fds.size(); i++)
         {
-            if (!(_fds[i].revents & POLLIN))
+            if (_fds[i].revents & POLLHUP)
+            {
+                removeClient(_fds[i].fd);
                 continue;
-
-            if (_fds[i].fd == _serverFd)
-            {
-                acceptNewClient();
             }
-            else
+
+            if (_fds[i].revents & POLLERR)
             {
-                receiveData(_fds[i].fd);
+                removeClient(_fds[i].fd);
+                continue;
+            }
+
+            if (_fds[i].revents & POLLIN)
+            {
+                if (_fds[i].fd == _serverFd)
+                    acceptNewClient();
+                else
+                    receiveData(_fds[i].fd);
             }
         }
         std::cout << "Poll returned : "
