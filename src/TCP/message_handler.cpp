@@ -1,18 +1,9 @@
 #include "../Network/server.hpp"
 #include "../Network/client.hpp"
 
-void Server::set_client(int fd, const std::string& buffer)
+void Server::processClientbuffer(int fd)
 {
-}
-int check_format(std::string commmand)
-{
-    std::cout <<"Dans la fonction check_format" << std::endl;
-    return 1;
-}
-
-void Server::processClientbuffer(Client *clients)
-{
-    std::string& buffer = clients->getBuffer();
+    std::string& buffer = _clients[fd]->getBuffer();
     std::cout <<  buffer << std::endl;
 
     size_t pos;
@@ -22,22 +13,12 @@ void Server::processClientbuffer(Client *clients)
         std::cout << command << std::endl;
         buffer.erase(0, pos + 2);
 
-        if (!clients->isAuthenticated())
+        if (!_clients[fd]->isAuthenticated())
         {
-            if(command.compare(0, 5, "NICK") == 0  || command.compare(0, 5, "USER") == 0)
-            {
-                if(!check_format(command)) // Pas encore fait check_format pour USER et NICK
-                {
-                   std::cerr << "Invalid command from client" << std::endl;
-                }
-                else
-                    set_client(clients->getFd(), command); //Pas encore fait set_client
-            }
-            else
-                std::cerr << "Set USER and NICK correctly";
+            Authentificate(command,fd);
         }
         // else
-        //     execute_IRC_command()
+            // execute_IRC_command()
     }
 }
 
@@ -67,13 +48,12 @@ void Server::receiveData(int fd)
             return;
         }
     }
-    processClientbuffer(_clients[fd]);
-    
+    processClientbuffer(fd);    
 }
 void send_instructions(int fd)
 {
     std::string instructions;
-    instructions = "Please set NICK and USER to get started.\n'NICK (nickname)' or 'USER (user)'";
+    instructions = "Please set NICK and USER to get started.\n'NICK (nickname)' or 'USER (user)'\n";
     send(fd, instructions.c_str(), instructions.size(), 0);
 }
 

@@ -5,6 +5,7 @@
 #include <map>
 
 #include <cstring>
+#include <sstream>
 #include <cstdlib>
 #include <string>
 #include <stdexcept>
@@ -18,6 +19,8 @@
 #include <poll.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+
+#include <cerrno>
 
 class Client;
 class Channel;
@@ -52,7 +55,9 @@ class Server
         void acceptNewClient();
         void receiveData(int fd);
         void removeClient(int fd);
-        void processClientbuffer(Client *clients);
+        void processClientbuffer(int fd);
+
+        int Authentificate(std::string command, int fd);
 };
 
 void send_instructions(int fd);
