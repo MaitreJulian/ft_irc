@@ -1,31 +1,49 @@
 #include "../Network/server.hpp"
 #include "../Network/client.hpp"
 
+
+void print_buffer(std::string buffer)
+{
+    std::cout << "Buffer = [";
+
+    for (size_t i = 0; i < buffer.size(); i++)
+    {
+        if (buffer[i] == '\r')
+            std::cout << "\\r";
+        else if (buffer[i] == '\n')
+            std::cout << "\\n";
+        else
+            std::cout << buffer[i];
+    }
+std::cout << "]" << std::endl;
+}
 void Server::processClientbuffer(int fd)
 {
     std::string& buffer = _clients[fd]->getBuffer();
-    std::cout <<  buffer << std::endl;
-
+    print_buffer(buffer);
     size_t pos;
     while ((pos = buffer.find("\r\n")) != std::string::npos)
     {
         std::string command = buffer.substr(0, pos);
-        std::cout << command << std::endl;
+        std::cout << "ca c'est la commande "<< command << std::endl;
         buffer.erase(0, pos + 2);
 
         if (!_clients[fd]->isAuthenticated())
         {
+            std::cout <<  "va dasn autentificate" <<std::endl;
             Authentificate(command,fd);
         }
-        // else
-            // execute_IRC_command()
+        else
+            std::cout << "n'est pas alle dans auten" << std::endl;
     }
+    std::cout << pos << std::endl;
 }
 
 void Server::receiveData(int fd)
 {
     char buffer[512];
 
+    std::cout << "Je suis dans reveive data" << std::endl;
     while (true)
     {
         int bytes = recv(fd, buffer, sizeof(buffer), 0);
