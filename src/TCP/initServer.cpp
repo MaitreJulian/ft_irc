@@ -6,11 +6,11 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:16:56 by julian            #+#    #+#             */
-/*   Updated: 2026/06/16 15:24:26 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/17 17:57:44 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "../Network/server.hpp"
 
 void Server::createSocket()
 {

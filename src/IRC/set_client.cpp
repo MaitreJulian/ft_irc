@@ -1,0 +1,96 @@
+#include "../Network/server.hpp"
+#include "../Network/client.hpp"
+bool Server::NicknameExist(const std::string& username)
+{
+    for (std::map<int, Client*>::iterator it = _clients.begin();
+         it != _clients.end();
+         ++it)
+    {
+        if (!it->second->getuser().empty() &&
+            it->second->getuser() == username)
+            return true;
+    }
+    return false;
+}
+bool Server::UsernameExist(const std::string& nickname)
+{
+    for (std::map<int, Client*>::iterator it = _clients.begin();
+         it != _clients.end();
+         ++it)
+    {
+        if (!it->second->getnick().empty() &&
+            it->second->getnick() == nickname)
+            return true;
+    }
+    return false;
+}
+
+std::vector<std::string> split_command(std::string command)
+{
+    std::istringstream iss(command);
+    std::vector<std::string> tokens;
+    std::string token;
+
+    while (iss >> token)
+        tokens.push_back(token);
+    return tokens;
+}
+
+int Server::Authentificate(std::string &buffer,size_t pos, int fd)
+{
+
+    std::string command = buffer.substr(0, pos);
+    std::cout << "ca c'est la commande "<< command << std::endl;
+    buffer.erase(0, pos + 2);
+
+    std::string instructions;
+    std::cout << "Dans Authentificate avec client fd : " << fd << std::endl;
+    std::vector<std::string> s_command = split_command(command);
+    
+    
+    if(s_command.size() == 2 && s_command[0] == "PASS")
+    {
+        if(_password == s_command[1])
+            _clients[fd]-> setpass();
+        else
+        {
+            std::cerr << "WRONG PASSWORD" << std::endl;
+            instructions = "Password incorrect";
+            send(fd, instructions.c_str(), instructions.size(), 0);
+        }
+        return 1;
+    }
+    else if(s_command.size() == 2 && s_command[0] == "NICK")
+    {
+        if (!NicknameExist(s_command[1]))
+            _clients[fd]->setNickname(s_command[1]);
+        else
+        {
+            instructions = "Nickname exist already or is empty";
+            send(fd, instructions.c_str(), instructions.size(), 0);
+
+        }
+    }
+    else if (s_command.size() == 5 && s_command[0] == "USER")
+    {
+        if (!UsernameExist(s_command[1]))
+            _clients[fd]->setUsername(s_command[1]);
+        else
+        {
+            instructions = "Username exist already or is empty";
+            send(fd, instructions.c_str(), instructions.size(), 0);
+
+        }
+    }
+    else 
+    {
+        std::cerr << "Invalid command from client" << std::endl;
+        std::string instructions;
+        instructions = "Set USER and NICK correctly\n'NICK (nickname)' and 'USER (user) 0 * :(real name)'\n";
+        send(fd, instructions.c_str(), instructions.size(), 0);
+        return 1;
+    }
+    if (_clients[fd]->isAuthenticated())
+        return 0;
+    return 1;
+}

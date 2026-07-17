@@ -14,7 +14,7 @@
 
 
 #include "channel.hpp"
-#include "client.hpp"
+#include "../Network/client.hpp"
 
 Channel::Channel(const std::string& name)
     : _name(name),

@@ -26,6 +26,8 @@ Server::~Server()
 
 void Server::acceptNewClient()
 {
+    std::string instructions;
+
     int clientFd = accept(_serverFd, NULL, NULL);
 
     if (clientFd < 0)
@@ -48,7 +50,8 @@ void Server::acceptNewClient()
     _fds.push_back(pfd);
 
     std::cout << "New client : " << clientFd << std::endl;
-    send_instructions(clientFd);
+    instructions = "Connection succeed";
+    send(clientFd, instructions.c_str(), instructions.size(), 0);
 }
 
 void Server::removeClient(int fd)

@@ -57,7 +57,11 @@ class Server
         void removeClient(int fd);
         void processClientbuffer(int fd);
 
-        int Authentificate(std::string command, int fd);
+        int Authentificate(std::string &buffer, size_t pos, int fd);
+        bool NicknameExist(const std::string &nickname);
+        bool UsernameExist(const std::string& nickname);
+
+        int execute_irc_command(std::string &buffer, size_t pos, int fd);
 };
 
 void send_instructions(int fd);

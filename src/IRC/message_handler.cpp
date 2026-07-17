@@ -24,17 +24,19 @@ void Server::processClientbuffer(int fd)
     size_t pos;
     while ((pos = buffer.find("\r\n")) != std::string::npos)
     {
-        std::string command = buffer.substr(0, pos);
-        std::cout << "ca c'est la commande "<< command << std::endl;
-        buffer.erase(0, pos + 2);
+
 
         if (!_clients[fd]->isAuthenticated())
         {
-            std::cout <<  "va dasn autentificate" <<std::endl;
-            Authentificate(command,fd);
+            // std::cout <<  "va dans autentificate" <<std::endl;
+            if(!Authentificate(buffer, pos, fd))
+                send_welcome_message(fd);
+            else
+                std::cout << "Authentification failed" << std::endl;
         }
-        else
-            std::cout << "n'est pas alle dans auten" << std::endl;
+        // else
+        //     execute_irc_command(buffer, pos, fd);
+
     }
     std::cout << pos << std::endl;
 }
@@ -67,12 +69,6 @@ void Server::receiveData(int fd)
         }
     }
     processClientbuffer(fd);    
-}
-void send_instructions(int fd)
-{
-    std::string instructions;
-    instructions = "Please set NICK and USER to get started.\n'NICK (nickname)' or 'USER (user)'\n";
-    send(fd, instructions.c_str(), instructions.size(), 0);
 }
 
 void send_welcome_message(int fd)

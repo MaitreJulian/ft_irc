@@ -3,6 +3,9 @@
 
 #include <string>
 #include <iostream>
+#include <set>
+
+class Channel;
 
 class Client
 {
@@ -13,12 +16,15 @@ class Client
         std::string _nickname;
         std::string _username;
         std::string _realname;
+        bool _passwordOK;
         bool has_nick;
         bool has_user;
 
         bool is_operator;
         
         std::string _buffer;
+
+        std::set<Channel*> _channels;
 
     public:
 
@@ -27,12 +33,17 @@ class Client
         int getFd() const;
 
         std::string& getBuffer();
-
+        
         std::string getnick();
+        std::string getuser();
+
         void setNickname(const std::string& nick);
         void setUsername(const std::string& user);
+        void setpass();
 
         bool isAuthenticated() const;
+
+        void join();
 };
 
 #endif
