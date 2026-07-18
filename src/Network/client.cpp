@@ -6,7 +6,7 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by julian            #+#    #+#             */
-/*   Updated: 2026/07/17 13:54:58 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/18 16:36:18 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Client::Client(int fd)
     has_nick= false;
     has_user= false;
     _passwordOK = false;
+    
 }
 
 int Client::getFd() const

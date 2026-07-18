@@ -40,10 +40,11 @@ class Client
         void setNickname(const std::string& nick);
         void setUsername(const std::string& user);
         void setpass();
+        
 
         bool isAuthenticated() const;
 
-        void join();
+        void join(Channel *channel);
 };
 
 #endif

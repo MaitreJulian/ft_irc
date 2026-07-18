@@ -34,8 +34,8 @@ void Server::processClientbuffer(int fd)
             else
                 std::cout << "Authentification failed" << std::endl;
         }
-        // else
-        //     execute_irc_command(buffer, pos, fd);
+        else
+            execute_irc_command(buffer, pos, fd);
 
     }
     std::cout << pos << std::endl;

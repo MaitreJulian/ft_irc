@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 #include <cstring>
 #include <sstream>
@@ -43,6 +44,7 @@ class Server
         Server(int port, const std::string& password);
         ~Server();
         void set_client(int fd, const std::string& buffer);
+        std::map<std::string, Channel*> getChannels();
         void initServer();
         void run();
 
@@ -62,6 +64,9 @@ class Server
         bool UsernameExist(const std::string& nickname);
 
         int execute_irc_command(std::string &buffer, size_t pos, int fd);
+
+        void channel_joined(const std::string &channel_name, int fd);
+
 };
 
 void send_instructions(int fd);
