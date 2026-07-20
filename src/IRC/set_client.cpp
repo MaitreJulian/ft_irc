@@ -1,25 +1,43 @@
 #include "../Network/server.hpp"
 #include "../Network/client.hpp"
-bool Server::NicknameExist(const std::string& username)
+
+void ft_command_size(std::vector<std::string> command)
 {
+    if (command.size() == 0)
+        return ;
+    size_t size = command.size();
+    size_t i = 0;
+    while (i < size)
+    {
+        std::cout << "command size : "<< size <<"[" << command[i] << "]";
+        i++;
+    }
+    std::cout<<std::endl;
+}
+
+
+bool Server::UsernameExist(const std::string& username)
+{
+    std::cout<<"Dans UsernameExist" <<std::endl;
     for (std::map<int, Client*>::iterator it = _clients.begin();
          it != _clients.end();
          ++it)
     {
-        if (!it->second->getuser().empty() &&
-            it->second->getuser() == username)
+        if (!it->second->getUsername().empty() &&
+            it->second->getUsername() == username)
             return true;
     }
     return false;
 }
-bool Server::UsernameExist(const std::string& nickname)
+bool Server::NicknameExist(const std::string& nickname)
 {
+    std::cout << "dnas NicknameExist" << std::endl;
     for (std::map<int, Client*>::iterator it = _clients.begin();
          it != _clients.end();
          ++it)
     {
-        if (!it->second->getnick().empty() &&
-            it->second->getnick() == nickname)
+        if (!it->second->getNickname().empty() &&
+            it->second->getNickname() == nickname)
             return true;
     }
     return false;
@@ -39,13 +57,14 @@ std::vector<std::string> split_command(std::string command)
 int Server::Authentificate(std::string &buffer,size_t pos, int fd)
 {
 
+    std::cout << "Dans Authentificate avec client fd : " << fd << std::endl;
     std::string command = buffer.substr(0, pos);
     std::cout << "ca c'est la commande "<< command << std::endl;
     buffer.erase(0, pos + 2);
 
     std::string instructions;
-    std::cout << "Dans Authentificate avec client fd : " << fd << std::endl;
     std::vector<std::string> s_command = split_command(command);
+    ft_command_size(s_command);
     
     
     if(s_command.size() == 2 && s_command[0] == "PASS")
@@ -79,7 +98,6 @@ int Server::Authentificate(std::string &buffer,size_t pos, int fd)
         {
             instructions = "Username exist already or is empty";
             send(fd, instructions.c_str(), instructions.size(), 0);
-
         }
     }
     else 

@@ -6,7 +6,7 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by julian            #+#    #+#             */
-/*   Updated: 2026/07/18 16:36:18 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/19 19:09:09 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,19 @@ std::string& Client::getBuffer()
     return _buffer;
 }
 
-std::string Client::getnick()
+std::string Client::getNickname()
 {
     return _nickname; 
 }
 
-std::string Client::getuser()
+std::string Client::getUsername()
 {
     return _username; 
 }
 void Client::setNickname(const std::string& nick)
 {
     _nickname = nick;
-    std::cout << "Le surnon est maintenant : " << _nickname << std::endl;
+    std::cout << "Le nickname est maintenant : " << _nickname << std::endl;
     has_nick = true;
 }
 

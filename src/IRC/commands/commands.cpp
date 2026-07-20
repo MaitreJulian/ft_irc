@@ -1,6 +1,6 @@
-#include "../Network/server.hpp"
-#include "../Network/client.hpp"
-#include "channel.hpp"
+#include "../../Network/server.hpp"
+#include "../../Network/client.hpp"
+#include "../channel.hpp"
 
 std::vector<std::string> parseIRC(std::string command)
 {
@@ -42,9 +42,15 @@ int Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
     buffer.erase(0, pos + 2);
     
     std::vector<std::string> s_command = parseIRC(command);
+    std::cout <<"size of command ==" << s_command.size() << std::endl;
     if (s_command.size() == 2 && s_command[0] == "JOIN")
     {
-        channel_joined(s_command[1], fd);//Doit creer list de clients dans channel
+        std::cout<< "Dans join" << std::endl;
+        channel_joined(s_command[1], fd);
+    }
+    else if (s_command.size() == 3 && s_command[0] == "PRIVMSG")
+    {
+        send_message(s_command);
     }
     return 0;
 

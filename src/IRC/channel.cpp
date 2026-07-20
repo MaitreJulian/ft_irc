@@ -55,6 +55,11 @@ size_t Channel::getUserCount() const
     return _users.size();
 }
 
+std::set<Client *> &Channel::getUserList()
+{
+    return _users;
+}
+
 void Channel::addUser(Client* client)
 {
     _users.insert(client);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fhanuise <hanuiseflorian@gmail.com>        +#+  +:+       +#+        */
+/*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by fhanuise          #+#    #+#             */
-/*   Updated: 2026/07/14 11:42:16 by fhanuise         ###   ########.fr       */
+/*   Updated: 2026/07/19 16:02:17 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Channel
         bool                isInviteOnly() const;
         int                 getUserLimit() const;
         size_t              getUserCount() const;
+        std::set<Client*>    &getUserList();
         bool                isOperator(Client* client) const;
         bool                hasUser(Client* client) const;
         void    addUser(Client* client);

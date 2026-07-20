@@ -48,7 +48,11 @@ class Server
         void initServer();
         void run();
 
+        Client *getClientbyFD(int fd);
+        Client* getClientbyNick(std::string username);
+
     private:
+
 
         void createSocket();
         void bindSocket();
@@ -66,7 +70,7 @@ class Server
         int execute_irc_command(std::string &buffer, size_t pos, int fd);
 
         void channel_joined(const std::string &channel_name, int fd);
-
+        void send_message(std::vector<std::string> s_command);
 };
 
 void send_instructions(int fd);

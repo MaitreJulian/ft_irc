@@ -32,7 +32,7 @@ void Server::processClientbuffer(int fd)
             if(!Authentificate(buffer, pos, fd))
                 send_welcome_message(fd);
             else
-                std::cout << "Authentification failed" << std::endl;
+                std::cout << "Not totally authenticated" << std::endl;
         }
         else
             execute_irc_command(buffer, pos, fd);

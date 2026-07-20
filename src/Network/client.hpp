@@ -34,8 +34,8 @@ class Client
 
         std::string& getBuffer();
         
-        std::string getnick();
-        std::string getuser();
+        std::string getNickname();
+        std::string getUsername();
 
         void setNickname(const std::string& nick);
         void setUsername(const std::string& user);
