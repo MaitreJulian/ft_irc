@@ -109,6 +109,9 @@ int Server::Authentificate(std::string &buffer,size_t pos, int fd)
         return 1;
     }
     if (_clients[fd]->isAuthenticated())
-        return 0;
-    return 1;
+    {
+        sendNumericReply(fd, "001", ":Welcome to ft_irc " + _clients[fd]->getNickname() + "!" + _clients[fd]->getUsername() + "@localhost\r\n");
+        return 1;
+    }
+    return 0;
 }

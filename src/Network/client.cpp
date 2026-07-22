@@ -6,7 +6,7 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by julian            #+#    #+#             */
-/*   Updated: 2026/07/19 19:09:09 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/22 15:54:28 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,9 @@ void Client::setpass()
 bool Client::isAuthenticated() const
 {
     return has_nick && has_user && _passwordOK;
+}
+
+std::string Client::getPrefix() const
+{
+    return _nickname + "!" + _username + "@localhost";
 }

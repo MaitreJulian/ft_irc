@@ -1,6 +1,7 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
+
 #include <string>
 #include <iostream>
 #include <set>
@@ -45,6 +46,7 @@ class Client
         bool isAuthenticated() const;
 
         void join(Channel *channel);
+        std::string getPrefix() const; // "nick!user@host"
 };
 
 #endif

@@ -29,8 +29,8 @@ void Server::processClientbuffer(int fd)
         if (!_clients[fd]->isAuthenticated())
         {
             // std::cout <<  "va dans autentificate" <<std::endl;
-            if(!Authentificate(buffer, pos, fd))
-                send_welcome_message(fd);
+            if(Authentificate(buffer, pos, fd))
+                continue;
             else
                 std::cout << "Not totally authenticated" << std::endl;
         }

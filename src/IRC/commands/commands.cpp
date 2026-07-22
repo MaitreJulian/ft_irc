@@ -50,7 +50,7 @@ int Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
     }
     else if (s_command.size() == 3 && s_command[0] == "PRIVMSG")
     {
-        send_message(s_command);
+        send_message(s_command, fd);
     }
     return 0;
 
