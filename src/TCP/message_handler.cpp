@@ -17,8 +17,8 @@ void Server::processClientbuffer(int fd)
         {
             Authentificate(command,fd);
         }
-        // else
-            // execute_IRC_command()
+        else
+            execute_IRC_command()
     }
 }
 

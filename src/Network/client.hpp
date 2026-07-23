@@ -14,6 +14,7 @@ class Client
         std::string _realname;
         bool has_nick;
         bool has_user;
+        bool has_pass;
 
         bool is_operator;
         
@@ -29,6 +30,7 @@ class Client
 
         std::string getnick();
         void setNickname(const std::string& nick);
+        void setPassword(const bool value);
         void setUsername(const std::string& user);
 
         bool isAuthenticated() const;

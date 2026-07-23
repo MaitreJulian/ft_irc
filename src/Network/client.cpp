@@ -17,6 +17,7 @@ Client::Client(int fd)
     _fd = fd;
     has_nick= false;
     has_user= false;
+    has_pass= false;
 }
 
 int Client::getFd() const
@@ -45,9 +46,14 @@ void Client::setUsername(const std::string& user)
     has_user = true;
 }
 
+void Client::setPassword(const bool value)
+{
+    has_pass = value;
+}
+
 bool Client::isAuthenticated() const
 {
-    return has_nick && has_user;
+    return has_nick && has_user && has_pass;
 }
 
 

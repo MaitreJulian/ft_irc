@@ -57,6 +57,13 @@ class Server
         void removeClient(int fd);
         void processClientbuffer(int fd);
 
+        void    execute_IRC_command(std::string command, int fd);
+        void    handleJoin(int fd, std::vector<std::string>& tokens);
+        void    handleKick(int fd, std::vector<std::string>& tokens);
+        void    handleInvite(int fd, std::vector<std::string>& tokens);
+        void    handleTopic(int fd, std::vector<std::string>& tokens);
+        void    handleMode(int fd, std::vector<std::string>& tokens);
+
         int Authentificate(std::string command, int fd);
 };
 

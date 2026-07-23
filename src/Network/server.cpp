@@ -113,3 +113,26 @@ void Server::run()
         << std::endl;
     }
 }
+
+void Server::execute_IRC_command(std::string command, int fd)
+{
+    std::vector<std::string> tokens = split_command(command);
+    if (token.empty())
+        return;
+    std::string cmd = tokens[0];
+        if (cmd == "JOIN")
+        handleJoin(fd, tokens);
+    else if (cmd == "KICK")
+        handleKick(fd, tokens);
+    else if (cmd == "INVITE")
+        handleInvite(fd, tokens);
+    else if (cmd == "TOPIC")
+        handleTopic(fd, tokens);
+    else if (cmd == "MODE")
+        handleMode(fd, tokens);
+    else
+    {
+        std::string err = "ERROR :UNKNOWN COMMAND\r\n";
+        send(fd, err.c_str(), err.size(), 0);
+    }
+}

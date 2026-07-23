@@ -19,7 +19,19 @@ int Server::Authentificate(std::string command, int fd)
 {
     std::cout << "Dans Authentificate avec client fd : " << fd << std::endl;
     std::vector<std::string> s_command = split_command(command);
-    if(s_command.size() == 2 && s_command[0] == "NICK")
+
+    if (s_command.size() == 2 && s_command[0] == "PASS")
+    {
+        if (s_command[1] == _password)
+            _clients[fd]->setPassword(true);
+        else
+        {
+            std::string err = "ERROR :Wrong password\r\n";
+            send(fd, err.c_str(), err.size(), 0);
+            removeClient(fd);
+        }
+    }
+    else if (s_command.size() == 2 && s_command[0] == "NICK")
     {
         _clients[fd]->setNickname(s_command[1]);
     }
@@ -27,12 +39,11 @@ int Server::Authentificate(std::string command, int fd)
     {
         _clients[fd]->setUsername(s_command[1]);
     }
-    else 
+    else
     {
         std::cerr << "Invalid command from client" << std::endl;
-        std::string instructions;
-        instructions = "Set USER and NICK correctly\n'NICK (nickname)' or 'USER (user) 0 * :(real name)'\n";
+        std::string instructions = "Set USER and NICK correctly\n'NICK (nickname)' or 'USER (user) 0 * :(real name)'\n";
         send(fd, instructions.c_str(), instructions.size(), 0);
-    }   
+    }
     return 1;
 }
