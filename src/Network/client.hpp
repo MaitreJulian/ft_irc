@@ -1,7 +1,12 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
+
 #include <string>
+#include <iostream>
+#include <set>
+
+class Channel;
 
 class Client
 {
@@ -12,6 +17,7 @@ class Client
         std::string _nickname;
         std::string _username;
         std::string _realname;
+        bool _passwordOK;
         bool has_nick;
         bool has_user;
         bool has_pass;
@@ -20,6 +26,8 @@ class Client
         
         std::string _buffer;
 
+        std::set<Channel*> _channels;
+
     public:
 
         Client(int fd);
@@ -27,13 +35,20 @@ class Client
         int getFd() const;
 
         std::string& getBuffer();
+        
+        std::string getNickname();
+        std::string getUsername();
 
-        std::string getnick();
         void setNickname(const std::string& nick);
         void setPassword(const bool value);
         void setUsername(const std::string& user);
+        void setpass();
+        
 
         bool isAuthenticated() const;
+
+        void join(Channel *channel);
+        std::string getPrefix() const; // "nick!user@host"
 };
 
 #endif

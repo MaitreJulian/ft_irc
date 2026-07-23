@@ -14,7 +14,7 @@
 
 
 #include "channel.hpp"
-#include "client.hpp"
+#include "../Network/client.hpp"
 
 Channel::Channel(const std::string& name)
     : _name(name),
@@ -53,6 +53,11 @@ int    Channel::getUserLimit() const
 size_t Channel::getUserCount() const
 {
     return _users.size();
+}
+
+std::set<Client *> &Channel::getUserList()
+{
+    return _users;
 }
 
 void Channel::addUser(Client* client)

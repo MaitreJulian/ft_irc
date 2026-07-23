@@ -6,7 +6,7 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by julian            #+#    #+#             */
-/*   Updated: 2026/06/25 13:15:50 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/22 15:54:28 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ Client::Client(int fd)
     _fd = fd;
     has_nick= false;
     has_user= false;
-    has_pass= false;
+    _passwordOK = false;
+    
 }
 
 int Client::getFd() const
@@ -30,31 +31,42 @@ std::string& Client::getBuffer()
     return _buffer;
 }
 
-std::string Client::getnick()
+std::string Client::getNickname()
 {
     return _nickname; 
+}
+
+std::string Client::getUsername()
+{
+    return _username; 
 }
 void Client::setNickname(const std::string& nick)
 {
     _nickname = nick;
+    std::cout << "Le nickname est maintenant : " << _nickname << std::endl;
     has_nick = true;
 }
 
 void Client::setUsername(const std::string& user)
 {
     _username = user;
+    std::cout << "Le username est maintenant : " << _username << std::endl;
     has_user = true;
 }
 
-void Client::setPassword(const bool value)
+
+void Client::setpass()
 {
-    has_pass = value;
+    _passwordOK = true;
+    std::cout << "Password OK" <<std::endl;
 }
 
 bool Client::isAuthenticated() const
 {
-    return has_nick && has_user && has_pass;
+    return has_nick && has_user && _passwordOK;
 }
 
-
-
+std::string Client::getPrefix() const
+{
+    return _nickname + "!" + _username + "@localhost";
+}

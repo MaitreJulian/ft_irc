@@ -1,31 +1,51 @@
 #include "../Network/server.hpp"
 #include "../Network/client.hpp"
 
+
+void print_buffer(std::string buffer)
+{
+    std::cout << "Buffer = [";
+
+    for (size_t i = 0; i < buffer.size(); i++)
+    {
+        if (buffer[i] == '\r')
+            std::cout << "\\r";
+        else if (buffer[i] == '\n')
+            std::cout << "\\n";
+        else
+            std::cout << buffer[i];
+    }
+std::cout << "]" << std::endl;
+}
 void Server::processClientbuffer(int fd)
 {
     std::string& buffer = _clients[fd]->getBuffer();
-    std::cout <<  buffer << std::endl;
-
+    print_buffer(buffer);
     size_t pos;
     while ((pos = buffer.find("\r\n")) != std::string::npos)
     {
-        std::string command = buffer.substr(0, pos);
-        std::cout << command << std::endl;
-        buffer.erase(0, pos + 2);
+
 
         if (!_clients[fd]->isAuthenticated())
         {
-            Authentificate(command,fd);
+            // std::cout <<  "va dans autentificate" <<std::endl;
+            if(Authentificate(buffer, pos, fd))
+                continue;
+            else
+                std::cout << "Not totally authenticated" << std::endl;
         }
         else
-            execute_IRC_command()
+            execute_irc_command(buffer, pos, fd);
+
     }
+    std::cout << pos << std::endl;
 }
 
 void Server::receiveData(int fd)
 {
     char buffer[512];
 
+    std::cout << "Je suis dans reveive data" << std::endl;
     while (true)
     {
         int bytes = recv(fd, buffer, sizeof(buffer), 0);
@@ -49,12 +69,6 @@ void Server::receiveData(int fd)
         }
     }
     processClientbuffer(fd);    
-}
-void send_instructions(int fd)
-{
-    std::string instructions;
-    instructions = "Please set NICK and USER to get started.\n'NICK (nickname)' or 'USER (user)'\n";
-    send(fd, instructions.c_str(), instructions.size(), 0);
 }
 
 void send_welcome_message(int fd)
