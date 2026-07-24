@@ -1,6 +1,22 @@
 #include "../Network/server.hpp"
 #include "../Network/client.hpp"
+#include "../IRC/channel.hpp"
 
+
+void Server::leaveAllChannels(Client *client)
+{
+    std::set<Channel*> channels = client->getChannels();
+
+    for (std::set<Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
+    {
+        Channel *channel = *it;
+
+        std::string quitMsg = ":" + client->getPrefix() + " QUIT :Client disconnected";
+        broadcastToChannel(channel, quitMsg, client->getFd());
+
+        channel->removeUser(client);
+    }
+}
 
 void print_buffer(std::string buffer)
 {

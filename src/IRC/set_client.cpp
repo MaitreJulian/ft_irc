@@ -1,6 +1,12 @@
 #include "../Network/server.hpp"
 #include "../Network/client.hpp"
 
+void Server::handlePing(std::vector<std::string> s_command, int fd)
+{
+    std::string token = (s_command.size() >= 2) ? s_command[1] : "";
+    sendReply(fd, "PONG :" + token);
+}
+
 void ft_command_size(std::vector<std::string> command)
 {
     if (command.size() == 0)
@@ -54,9 +60,8 @@ std::vector<std::string> split_command(std::string command)
     return tokens;
 }
 
-int Server::Authentificate(std::string &buffer,size_t pos, int fd)
+int Server::Authentificate(std::string &buffer, size_t pos, int fd)
 {
-
     std::cout << "Dans Authentificate avec client fd : " << fd << std::endl;
     std::string command = buffer.substr(0, pos);
     std::cout << "ca c'est la commande "<< command << std::endl;
@@ -65,9 +70,19 @@ int Server::Authentificate(std::string &buffer,size_t pos, int fd)
     std::string instructions;
     std::vector<std::string> s_command = split_command(command);
     ft_command_size(s_command);
-    
-    
-    if(s_command.size() == 2 && s_command[0] == "PASS")
+
+    if (s_command.size() > 0 && s_command[0] == "CAP")
+    {
+        if (s_command.size() >= 2 && s_command[1] == "LS")
+            sendReply(fd, "CAP * LS :");
+        return 1;
+    }
+    else if (s_command.size() > 0 && s_command[0] == "PING")
+    {
+        handlePing(s_command, fd);
+        return 1;
+    }
+    else if(s_command.size() == 2 && s_command[0] == "PASS")
     {
         if(_password == s_command[1])
             _clients[fd]-> setpass();

@@ -116,3 +116,18 @@ void Channel::setUserLimit(int limit)
 {
     _userLimit = limit;
 }
+
+bool Channel::isInvited(Client* client) const
+{
+    return _invited.count(client) > 0;
+}
+
+void Channel::addInvited(Client* client)
+{
+    _invited.insert(client);
+}
+
+bool Channel::isTopicRestricted() const
+{
+    return _topicRestricted;
+}

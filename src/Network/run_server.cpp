@@ -31,23 +31,28 @@ void Server::acceptNewClient()
     send(clientFd, instructions.c_str(), instructions.size(), 0);
 }
 
+
 void Server::removeClient(int fd)
 {
     std::map<int, Client*>::iterator it = _clients.find(fd);
 
     if (it != _clients.end())
     {
-        delete it->second;
+        Client *client = it->second;
+
+        leaveAllChannels(client);
+
+        delete client;
         _clients.erase(it);
     }
 
-    for (std::vector<pollfd>::iterator it = _fds.begin();
-         it != _fds.end();
-         ++it)
+    for (std::vector<pollfd>::iterator pit = _fds.begin();
+         pit != _fds.end();
+         ++pit)
     {
-        if (it->fd == fd)
+        if (pit->fd == fd)
         {
-            _fds.erase(it);
+            _fds.erase(pit);
             break;
         }
     }

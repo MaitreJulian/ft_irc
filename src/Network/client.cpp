@@ -6,7 +6,7 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by julian            #+#    #+#             */
-/*   Updated: 2026/07/22 15:54:28 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/24 16:44:29 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,14 @@ bool Client::isAuthenticated() const
 std::string Client::getPrefix() const
 {
     return _nickname + "!" + _username + "@localhost";
+}
+
+void Client::leave(Channel *channel)
+{
+    _channels.erase(channel);
+}
+
+std::set<Channel*>& Client::getChannels()
+{
+    return _channels;
 }

@@ -6,7 +6,7 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by fhanuise          #+#    #+#             */
-/*   Updated: 2026/07/19 16:02:17 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/24 15:25:38 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Channel
         std::string         _password;
         std::set<Client*>   _users;
         std::set<Client*>   _operators;
+        std::set<Client*>   _invited;
         bool                _inviteOnly;
         bool                _topicRestricted;
         int                 _userLimit;
@@ -51,6 +52,9 @@ class Channel
         void    setInviteOnly(bool value);
         void    setTopicRestricted(bool value);
         void    setUserLimit(int limit);
+        bool    isInvited(Client* client) const;
+        void    addInvited(Client* client);
+        bool isTopicRestricted() const;
 };
 
 #endif

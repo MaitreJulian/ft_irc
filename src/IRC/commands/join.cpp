@@ -4,12 +4,7 @@
 #include "../operator.hpp"
 
 
-void Client::join(Channel *channel)
-{
-    _channels.insert(channel);
-}
-
-void Server::channel_joined(const std::string &channel_name, int fd)
+void Server::channel_joined(const std::string &channel_name, int fd, const std::string &key)
 {
     Client *client = _clients[fd];
     std::map<std::string, Channel*>::iterator it = _channels.find(channel_name);
@@ -26,19 +21,36 @@ void Server::channel_joined(const std::string &channel_name, int fd)
     else
     {
         channel = it->second;
+
+        if (channel->isInviteOnly() && !channel->isInvited(client))
+        {
+            sendNumericReply(fd, "473", channel_name + " :Cannot join channel (+i)");
+            return;
+        }
+
+        if (!channel->getPassword().empty() && channel->getPassword() != key)
+        {
+            sendNumericReply(fd, "475", channel_name + " :Cannot join channel (+k)");
+            return;
+        }
+
+        if (channel->getUserLimit() > 0 &&
+            channel->getUserCount() >= static_cast<size_t>(channel->getUserLimit()))
+        {
+            sendNumericReply(fd, "471", channel_name + " :Cannot join channel (+l)");
+            return;
+        }
+
         channel->addUser(client);
         client->join(channel);
     }
 
-    // 1. Confirmation du JOIN, envoyée à tout le monde dans le channel (client inclus)
     std::string joinMsg = ":" + client->getPrefix() + " JOIN :" + channel_name;
     broadcastToChannel(channel, joinMsg);
 
-    // 2. Topic si défini (RPL_TOPIC = 332)
     if (!channel->getTopic().empty())
         sendNumericReply(fd, "332", channel_name + " :" + channel->getTopic());
 
-    // 3. Liste des utilisateurs du channel (RPL_NAMREPLY = 353 / RPL_ENDOFNAMES = 366)
     std::string names;
     std::set<Client*>::iterator uit = channel->getUserList().begin();
     std::set<Client*>::iterator uite = channel->getUserList().end();

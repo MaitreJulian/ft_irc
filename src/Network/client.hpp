@@ -34,6 +34,7 @@ class Client
         int getFd() const;
 
         std::string& getBuffer();
+        std::set<Channel*>& getChannels();
         
         std::string getNickname();
         std::string getUsername();
@@ -41,11 +42,11 @@ class Client
         void setNickname(const std::string& nick);
         void setUsername(const std::string& user);
         void setpass();
-        
 
         bool isAuthenticated() const;
 
         void join(Channel *channel);
+        void leave(Channel *channel);
         std::string getPrefix() const; // "nick!user@host"
 };
 

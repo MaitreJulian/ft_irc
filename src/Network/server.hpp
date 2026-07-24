@@ -65,17 +65,19 @@ class Server
         void acceptNewClient();
         void receiveData(int fd);
         void removeClient(int fd);
+        void leaveAllChannels(Client *client);
         void processClientbuffer(int fd);
 
         //Init Client
         int Authentificate(std::string &buffer, size_t pos, int fd);
         bool NicknameExist(const std::string &nickname);
         bool UsernameExist(const std::string& nickname);
+        void handlePing(std::vector<std::string> s_command, int fd);
 
         int execute_irc_command(std::string &buffer, size_t pos, int fd);
 
         //Commands
-        void channel_joined(const std::string &channel_name, int fd);
+        void channel_joined(const std::string &channel_name, int fd, const std::string &key = "");
         void send_message(std::vector<std::string> s_command, int fd);
 
         //Reply
@@ -85,7 +87,14 @@ class Server
         void sendNumericReply(int fd, const std::string &code, const std::string &params);
         void broadcastToChannel(Channel *channel, const std::string &message, int excludeFd = -1);
 
-};
+        //Operators commands
+        void handleTopic(std::vector<std::string> s_command, int fd);
+        void handleInvite(std::vector<std::string> s_command, int fd);
+        void handleMode(std::vector<std::string> s_command, int fd);
+        void handleKick(std::vector<std::string> s_command, int fd);
+
+
+    };      
 
 void send_instructions(int fd);
 void send_welcome_message(int fd);
