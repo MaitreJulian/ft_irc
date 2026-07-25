@@ -75,53 +75,44 @@ int Server::Authentificate(std::string &buffer, size_t pos, int fd)
     {
         if (s_command.size() >= 2 && s_command[1] == "LS")
             sendReply(fd, "CAP * LS :");
-        return 1;
     }
     else if (s_command.size() > 0 && s_command[0] == "PING")
     {
         handlePing(s_command, fd);
-        return 1;
     }
     else if(s_command.size() == 2 && s_command[0] == "PASS")
     {
         if(_password == s_command[1])
-            _clients[fd]-> setpass();
+            _clients[fd]->setpass();
         else
         {
             std::cerr << "WRONG PASSWORD" << std::endl;
-            instructions = "Password incorrect";
-            send(fd, instructions.c_str(), instructions.size(), 0);
+            sendNumericReply(fd, "464", ":Password incorrect");
         }
-        return 1;
     }
     else if(s_command.size() == 2 && s_command[0] == "NICK")
     {
         if (!NicknameExist(s_command[1]))
-            _clients[fd]->setNickname(s_command[1]);
-        else
         {
-            instructions = "Nickname exist already or is empty";
-            send(fd, instructions.c_str(), instructions.size(), 0);
-
+            std::cout << "dans command NICK" <<std::endl;
+            _clients[fd]->setNickname(s_command[1]);
+            
+            sendReply(fd, "Nickname is now " + _clients[fd]->getNickname());
         }
+        else
+            sendNumericReply(fd, "433", s_command[1] + " :Nickname is already in use");
     }
     else if (s_command.size() == 5 && s_command[0] == "USER")
     {
         if (!UsernameExist(s_command[1]))
             _clients[fd]->setUsername(s_command[1]);
         else
-        {
-            instructions = "Username exist already or is empty";
-            send(fd, instructions.c_str(), instructions.size(), 0);
-        }
+            sendReply(fd, "Username exist already or is empty");
     }
-    else 
+    else
     {
         std::cerr << "Invalid command from client" << std::endl;
-        std::string instructions;
-        instructions = "Set USER and NICK correctly\n'NICK (nickname)' and 'USER (user) 0 * :(real name)'\n";
-        send(fd, instructions.c_str(), instructions.size(), 0);
-        return 1;
+        sendReply(fd, "Set USER and NICK correctly\r\nNICK (nickname)\r\nUSER (user) 0 * :(real name)");
     }
     if (_clients[fd]->isAuthenticated())
     {

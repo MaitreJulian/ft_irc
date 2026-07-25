@@ -6,7 +6,7 @@
 /*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by julian            #+#    #+#             */
-/*   Updated: 2026/07/24 16:44:29 by julian           ###   ########.fr       */
+/*   Updated: 2026/07/25 16:58:28 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,19 @@ void Client::leave(Channel *channel)
 std::set<Channel*>& Client::getChannels()
 {
     return _channels;
+}
+
+void Client::join(Channel *channel)
+{
+    getChannels().insert(channel);
+}
+
+std::string& Client::getOutBuffer()
+{
+    return _outBuffer;
+}
+
+void Client::appendOutBuffer(const std::string &data)
+{
+    _outBuffer += data;
 }

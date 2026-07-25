@@ -24,9 +24,9 @@
 #include <sys/socket.h>
 
 #include <cerrno>
+#include "../IRC/channel.hpp"
 
 class Client;
-class Channel;
 
 class Server
 {
@@ -74,7 +74,7 @@ class Server
         bool UsernameExist(const std::string& nickname);
         void handlePing(std::vector<std::string> s_command, int fd);
 
-        int execute_irc_command(std::string &buffer, size_t pos, int fd);
+        void execute_irc_command(std::string &buffer, size_t pos, int fd);
 
         //Commands
         void channel_joined(const std::string &channel_name, int fd, const std::string &key = "");
@@ -82,21 +82,26 @@ class Server
 
         //Reply
 
-        // Reply
+    // Reply
         void sendReply(int fd, const std::string &message);
         void sendNumericReply(int fd, const std::string &code, const std::string &params);
         void broadcastToChannel(Channel *channel, const std::string &message, int excludeFd = -1);
+
+        // Write robustness
+        void flushClient(int fd);
+        void enableWritePoll(int fd);
+        void disableWritePoll(int fd);
 
         //Operators commands
         void handleTopic(std::vector<std::string> s_command, int fd);
         void handleInvite(std::vector<std::string> s_command, int fd);
         void handleMode(std::vector<std::string> s_command, int fd);
         void handleKick(std::vector<std::string> s_command, int fd);
-
-
+        void handlePart(std::vector<std::string> s_command, int fd);
+        void handleNick(std::vector<std::string> s_command, int fd);
+        void handleUser(std::vector<std::string>s_command, int fd);
     };      
 
 void send_instructions(int fd);
-void send_welcome_message(int fd);
 
 #endif

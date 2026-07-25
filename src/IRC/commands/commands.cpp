@@ -34,7 +34,7 @@ std::vector<std::string> parseIRC(std::string command)
     return args;
 }
 
-int Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
+void Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
 {
     std::string command = buffer.substr(0, pos);
     std::cout << "ca c'est la commande "<< command << std::endl;
@@ -44,7 +44,7 @@ int Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
     std::cout <<"size of command ==" << s_command.size() << std::endl;
 
     if (s_command.empty())
-        return 0;
+        return;
 
     if (s_command[0] == "PING")
         handlePing(s_command, fd);
@@ -63,5 +63,9 @@ int Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
         handleMode(s_command, fd);
     else if (s_command[0] == "KICK")
         handleKick(s_command, fd);
-    return 0;
+    else if (s_command[0] == "PART")
+        handlePart(s_command, fd);
+    else if (s_command[0] == "NICK")
+        handleNick(s_command, fd);
+
 }

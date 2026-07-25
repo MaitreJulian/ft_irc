@@ -87,9 +87,3 @@ void Server::receiveData(int fd)
     processClientbuffer(fd);    
 }
 
-void send_welcome_message(int fd)
-{
-    std::string welcome_message;
-    welcome_message = "Welcome to the IRC server!\n";
-    send(fd, welcome_message.c_str(), welcome_message.size(), 0);
-}

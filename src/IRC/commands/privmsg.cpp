@@ -2,17 +2,6 @@
 #include "../../Network/client.hpp"
 #include "../channel.hpp"
 
-
-void send_private_message(Client *receiver, std::string message)
-{
-    send(receiver->getFd(), message.c_str(), message.size(), 0);
-}
-
-
-#include "../../Network/server.hpp"
-#include "../../Network/client.hpp"
-#include "../channel.hpp"
-
 void Server::send_message(std::vector<std::string> s_command, int fd)
 {
     Client *sender = getClientbyFD(fd);

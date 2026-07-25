@@ -3,8 +3,6 @@
 
 void Server::acceptNewClient()
 {
-    std::string instructions;
-
     int clientFd = accept(_serverFd, NULL, NULL);
 
     if (clientFd < 0)
@@ -15,20 +13,16 @@ void Server::acceptNewClient()
     }
 
     Client* client = new Client(clientFd);
-
     _clients[clientFd] = client;
 
     pollfd pfd;
-
     pfd.fd = clientFd;
     pfd.events = POLLIN;
     pfd.revents = 0;
-
     _fds.push_back(pfd);
 
     std::cout << "New client : " << clientFd << std::endl;
-    instructions = "Connection succeed\n";
-    send(clientFd, instructions.c_str(), instructions.size(), 0);
+    sendReply(clientFd, "Connection succeed");
 }
 
 
@@ -70,31 +64,43 @@ void Server::run()
     while (true)
     {
         int ret = poll(&_fds[0], _fds.size(), -1);
+        (void)ret;
 
         for (size_t i = 0; i < _fds.size(); i++)
         {
-            if (_fds[i].revents & POLLHUP)
+            int fd = _fds[i].fd;
+            short revents = _fds[i].revents;
+            bool removed = false;
+
+            if (revents & (POLLHUP | POLLERR))
             {
-                removeClient(_fds[i].fd);
-                continue;
+                removeClient(fd);
+                removed = true;
+            }
+            else
+            {
+                if (revents & POLLOUT)
+                    flushClient(fd);
+
+                // flushClient peut lui-même appeler removeClient en cas d'erreur d'écriture
+                if (getClientbyFD(fd) == NULL && fd != _serverFd)
+                    removed = true;
+
+                if (!removed && (revents & POLLIN))
+                {
+                    if (fd == _serverFd)
+                        acceptNewClient();
+                    else
+                        receiveData(fd);
+                }
+
+                // receiveData peut aussi appeler removeClient (recv == 0 ou erreur)
+                if (!removed && getClientbyFD(fd) == NULL && fd != _serverFd)
+                    removed = true;
             }
 
-            if (_fds[i].revents & POLLERR)
-            {
-                removeClient(_fds[i].fd);
-                continue;
-            }
-
-            if (_fds[i].revents & POLLIN)
-            {
-                if (_fds[i].fd == _serverFd)
-                    acceptNewClient();
-                else
-                    receiveData(_fds[i].fd);
-            }
+            if (removed)
+                i--; // l'élément suivant a glissé à l'index i, on le retraite ce tour-ci
         }
-        std::cout << "Poll returned : "
-        << ret
-        << std::endl;
     }
 }

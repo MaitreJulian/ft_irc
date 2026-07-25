@@ -24,7 +24,7 @@ class Client
         bool is_operator;
         
         std::string _buffer;
-
+        std::string _outBuffer;
         std::set<Channel*> _channels;
 
     public:
@@ -48,6 +48,8 @@ class Client
         void join(Channel *channel);
         void leave(Channel *channel);
         std::string getPrefix() const; // "nick!user@host"
+        std::string& getOutBuffer();
+        void appendOutBuffer(const std::string &data);
 };
 
 #endif

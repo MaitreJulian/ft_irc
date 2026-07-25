@@ -30,7 +30,10 @@ std::map<std::string, Channel*> Server::getChannels()
 
 Client* Server::getClientbyFD(int fd)
 {
-    return _clients[fd];
+    std::map<int, Client*>::iterator it = _clients.find(fd);
+    if (it == _clients.end())
+        return NULL;
+    return it->second;
 }
 Client* Server::getClientbyNick(std::string nickname)
 {
