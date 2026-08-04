@@ -24,11 +24,7 @@ void Server::handleNick(std::vector<std::string> s_command, int fd)
     std::string nickChangeMsg = ":" + oldPrefix + " NICK :" + new_nick;
 
     client->setNickname(new_nick);
-
-    // Confirmation au client lui-même (il ne fait partie d'aucun channel dans certains cas)
     sendReply(fd, nickChangeMsg);
-
-    // Broadcast à tous les channels où il est présent (sans le redoubler s'il est dans plusieurs)
     std::set<Channel*> &channels = client->getChannels();
     std::set<Client*> alreadyNotified;
     alreadyNotified.insert(client);

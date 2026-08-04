@@ -62,28 +62,17 @@ void Server::receiveData(int fd)
     char buffer[512];
 
     std::cout << "Je suis dans reveive data" << std::endl;
-    while (true)
-    {
         int bytes = recv(fd, buffer, sizeof(buffer), 0);
 
-        if (bytes > 0)
-        {
-            _clients[fd]->getBuffer().append(buffer, bytes);
-        }
-        else if (bytes == 0)
-        {
-            removeClient(fd);
-            return;
-        }
-        else
-        {
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
-                break;
-
-            removeClient(fd);
-            return;
-        }
+    if (bytes > 0)
+    {
+        _clients[fd]->getBuffer().append(buffer, bytes);
+        processClientbuffer(fd);    
     }
-    processClientbuffer(fd);    
+    else if (bytes == 0)
+        removeClient(fd);
+    else
+        if (errno != EAGAIN && errno != EWOULDBLOCK )
+        removeClient(fd);
 }
 

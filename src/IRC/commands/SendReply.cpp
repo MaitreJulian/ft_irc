@@ -8,7 +8,7 @@ void Server::sendReply(int fd, const std::string &message)
         return;
 
     client->appendOutBuffer(message + "\r\n");
-    flushClient(fd);
+    enableWritePoll(fd);  
 }
 
 void Server::sendNumericReply(int fd, const std::string &code, const std::string &params)
@@ -33,8 +33,6 @@ void Server::broadcastToChannel(Channel *channel, const std::string &message, in
 }
 
 
-// Tente d'écouler le buffer de sortie d'un client.
-// Appelée après chaque ajout au buffer, et à chaque événement POLLOUT.
 void Server::flushClient(int fd)
 {
     Client *client = getClientbyFD(fd);
@@ -42,30 +40,26 @@ void Server::flushClient(int fd)
         return;
 
     std::string &outBuf = client->getOutBuffer();
-
-    while (!outBuf.empty())
+    if (outBuf.empty())
     {
-        int bytes = send(fd, outBuf.c_str(), outBuf.size(), 0);
-
-        if (bytes > 0)
-        {
-            outBuf.erase(0, bytes);
-        }
-        else if (bytes < 0 && (errno == EAGAIN || errno == EWOULDBLOCK))
-        {
-            break; // socket plein pour l'instant, on réessaiera au prochain POLLOUT
-        }
-        else
-        {
-            removeClient(fd); // erreur réelle (EPIPE, ECONNRESET...) ou déconnexion
-            return;
-        }
+        disableWritePoll(fd);
+        return;
     }
 
-    if (outBuf.empty())
-        disableWritePoll(fd);
+    int bytes = send(fd, outBuf.c_str(), outBuf.size(), 0);
+
+    if (bytes > 0)
+    {
+        outBuf.erase(0, bytes);
+        if (outBuf.empty())
+            disableWritePoll(fd);
+    }
+    else if (bytes < 0 && (errno == EAGAIN || errno == EWOULDBLOCK))
+        return;
     else
-        enableWritePoll(fd);
+    {
+        removeClient(fd);
+    }
 }
 
 void Server::enableWritePoll(int fd)

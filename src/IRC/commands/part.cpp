@@ -48,10 +48,7 @@ void Server::handlePart(std::vector<std::string> s_command, int fd)
         }
 
         std::string partMsg = ":" + client->getPrefix() + " PART " + channel_name + " :" + reason;
-
-        // Diffuse à tout le monde AVANT de retirer, pour que l'émetteur voie aussi la confirmation
         broadcastToChannel(channel, partMsg);
-
         channel->removeUser(client);
         client->leave(channel);
     }

@@ -47,7 +47,7 @@ class Client
 
         void join(Channel *channel);
         void leave(Channel *channel);
-        std::string getPrefix() const; // "nick!user@host"
+        std::string getPrefix() const;
         std::string& getOutBuffer();
         void appendOutBuffer(const std::string &data);
 };

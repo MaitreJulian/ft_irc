@@ -81,11 +81,8 @@ void Server::run()
             {
                 if (revents & POLLOUT)
                     flushClient(fd);
-
-                // flushClient peut lui-même appeler removeClient en cas d'erreur d'écriture
                 if (getClientbyFD(fd) == NULL && fd != _serverFd)
                     removed = true;
-
                 if (!removed && (revents & POLLIN))
                 {
                     if (fd == _serverFd)
@@ -93,14 +90,11 @@ void Server::run()
                     else
                         receiveData(fd);
                 }
-
-                // receiveData peut aussi appeler removeClient (recv == 0 ou erreur)
                 if (!removed && getClientbyFD(fd) == NULL && fd != _serverFd)
                     removed = true;
             }
-
             if (removed)
-                i--; // l'élément suivant a glissé à l'index i, on le retraite ce tour-ci
+                i--;
         }
     }
 }
