@@ -54,14 +54,14 @@ void Server::processClientbuffer(int fd)
             execute_irc_command(buffer, pos, fd);
 
     }
-    std::cout << pos << std::endl;
+    // std::cout << pos << std::endl;
 }
 
 void Server::receiveData(int fd)
 {
     char buffer[512];
 
-    std::cout << "Je suis dans reveive data" << std::endl;
+    // std::cout << "Je suis dans reveive data" << std::endl;
         int bytes = recv(fd, buffer, sizeof(buffer), 0);
 
     if (bytes > 0)
@@ -72,7 +72,9 @@ void Server::receiveData(int fd)
     else if (bytes == 0)
         removeClient(fd);
     else
+    {
         if (errno != EAGAIN && errno != EWOULDBLOCK )
-        removeClient(fd);
+            removeClient(fd);
+    }
 }
 

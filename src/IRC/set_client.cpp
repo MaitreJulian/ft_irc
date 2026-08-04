@@ -15,7 +15,7 @@ void ft_command_size(std::vector<std::string> command)
     size_t i = 0;
     while (i < size)
     {
-        std::cout << "command size : "<< size <<"[" << command[i] << "]";
+        // std::cout << "command size : "<< size <<"[" << command[i] << "]";
         i++;
     }
     std::cout<<std::endl;
@@ -24,7 +24,7 @@ void ft_command_size(std::vector<std::string> command)
 
 bool Server::UsernameExist(const std::string& username)
 {
-    std::cout<<"Dans UsernameExist" <<std::endl;
+    // std::cout<<"Dans UsernameExist" <<std::endl;
     for (std::map<int, Client*>::iterator it = _clients.begin();
          it != _clients.end();
          ++it)
@@ -37,7 +37,7 @@ bool Server::UsernameExist(const std::string& username)
 }
 bool Server::NicknameExist(const std::string& nickname)
 {
-    std::cout << "dnas NicknameExist" << std::endl;
+    // std::cout << "dnas NicknameExist" << std::endl;
     for (std::map<int, Client*>::iterator it = _clients.begin();
          it != _clients.end();
          ++it)
@@ -62,9 +62,9 @@ std::vector<std::string> split_command(std::string command)
 
 int Server::Authentificate(std::string &buffer, size_t pos, int fd)
 {
-    std::cout << "Dans Authentificate avec client fd : " << fd << std::endl;
+    // std::cout << "Dans Authentificate avec client fd : " << fd << std::endl;
     std::string command = buffer.substr(0, pos);
-    std::cout << "ca c'est la commande "<< command << std::endl;
+    // std::cout << "ca c'est la commande "<< command << std::endl;
     buffer.erase(0, pos + 2);
 
     std::string instructions;
@@ -94,7 +94,7 @@ int Server::Authentificate(std::string &buffer, size_t pos, int fd)
     {
         if (!NicknameExist(s_command[1]))
         {
-            std::cout << "dans command NICK" <<std::endl;
+            // std::cout << "dans command NICK" <<std::endl;
             _clients[fd]->setNickname(s_command[1]);
             
             sendReply(fd, "Nickname is now " + _clients[fd]->getNickname());

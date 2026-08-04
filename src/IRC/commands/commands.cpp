@@ -37,7 +37,7 @@ std::vector<std::string> parseIRC(std::string command)
 void Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
 {
     std::string command = buffer.substr(0, pos);
-    std::cout << "ca c'est la commande "<< command << std::endl;
+    // std::cout << "ca c'est la commande "<< command << std::endl;
     buffer.erase(0, pos + 2);
 
     std::vector<std::string> s_command = parseIRC(command);
@@ -50,7 +50,7 @@ void Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
         handlePing(s_command, fd);
     else if (s_command.size() == 2 && s_command[0] == "JOIN")
     {
-        std::cout<< "Dans join" << std::endl;
+        // std::cout<< "Dans join" << std::endl;
         channel_joined(s_command[1], fd);
     }
     else if (s_command.size() == 3 && s_command[0] == "PRIVMSG")
