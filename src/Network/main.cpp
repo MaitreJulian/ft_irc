@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fhanuise <fhanuise@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:00:05 by julian            #+#    #+#             */
-/*   Updated: 2026/06/16 15:26:40 by julian           ###   ########.fr       */
+/*   Updated: 2026/08/04 17:02:17 by fhanuise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
+#include <csignal>
+#include <cerrno>
+#include <cstring>
+
+sig_atomic_t g_signal = 0;
+
+void handleSigint(int sig)
+{
+    (void)sig;
+    g_signal = 1;
+}
+
 
 void launch_server(int port, const std::string& password)
 {
@@ -49,7 +61,22 @@ int main(int ac, char **av)
         return 1;
     }  
     std::string password = av[2];
+    struct sigaction sa;
+    std::memset(&sa, 0, sizeof(sa));   // évite les champs non initialisés
+    sa.sa_handler = handleSigint;
+    sigemptyset(&sa.sa_mask);          // aucun signal bloqué pendant l'exécution du handler
+    sa.sa_flags = 0;                   // pas de SA_RESTART : on veut que poll() soit interrompu
 
+    if (sigaction(SIGINT, &sa, NULL) == -1)
+    {
+        std::cerr << "sigaction failed" << std::endl;
+        return 1;
+    }
+    if (sigaction(SIGTERM, &sa, NULL) == -1)
+    {
+        std::cerr << "sigaction failed" << std::endl;
+        return 1;
+    }
     launch_server(port, password);
     return 0;
 }

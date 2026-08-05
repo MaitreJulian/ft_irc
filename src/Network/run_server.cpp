@@ -1,6 +1,8 @@
 #include "server.hpp"
 #include "client.hpp"
+#include <csignal>
 
+extern sig_atomic_t g_signal;   
 void Server::acceptNewClient()
 {
     int clientFd = accept(_serverFd, NULL, NULL);
@@ -58,13 +60,17 @@ void Server::removeClient(int fd)
               << " disconnected"
               << std::endl;
 }
-
 void Server::run()
 {
-    while (true)
+    while (!g_signal)
     {
         int ret = poll(&_fds[0], _fds.size(), -1);
-        (void)ret;
+
+        if (ret < 0)
+        {
+            if (errno == EINTR)
+                break;      
+        }
 
         for (size_t i = 0; i < _fds.size(); i++)
         {
@@ -97,4 +103,22 @@ void Server::run()
                 i--;
         }
     }
+    for (std::map<int, Client*>::iterator it = _clients.begin();
+         it != _clients.end(); ++it)
+    {
+        close(it->first);
+        delete it->second;
+    }
+    _clients.clear();
+
+    for (std::map<std::string, Channel*>::iterator it = _channels.begin();
+         it != _channels.end(); ++it)
+    {
+        delete it->second;
+    }
+    _channels.clear();
+
+    close(_serverFd);
+
+    std::cout << "Server shutting down (signal received)" << std::endl;
 }
