@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fhanuise <fhanuise@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 17:27:18 by fhanuise          #+#    #+#             */
-/*   Updated: 2026/08/04 17:27:19 by fhanuise         ###   ########.fr       */
+/*   Updated: 2026/08/05 15:11:06 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,9 @@ void Server::execute_irc_command(std::string &buffer, size_t pos, int fd)
     if (s_command[0] == "PING")
         handlePing(s_command, fd);
     else if (s_command.size() == 2 && s_command[0] == "JOIN")
-    {
-        // std::cout<< "Dans join" << std::endl;
         channel_joined(s_command[1], fd);
-    }
+    else if (s_command.size() == 3 && s_command[0] == "JOIN")
+        channel_joined(s_command[1], fd, s_command[2]);
     else if (s_command.size() == 3 && s_command[0] == "PRIVMSG")
         send_message(s_command, fd);
     else if (s_command[0] == "TOPIC")

@@ -40,6 +40,16 @@ const std::string& Channel::getPassword() const
     return _password;
 }
 
+const std::set<Client*> Channel::getUsers() const
+{
+    return _users;
+}
+
+const std::set<Client*> Channel::getOperators() const
+{
+    return _operators;
+}
+
 bool   Channel::isInviteOnly() const
 {
     return _inviteOnly;
@@ -69,6 +79,7 @@ void Channel::removeUser(Client* client)
 {
     _users.erase(client);
     _operators.erase(client);
+    _invited.erase(client);
 }
 
 bool Channel::hasUser(Client* client) const
@@ -131,3 +142,5 @@ bool Channel::isTopicRestricted() const
 {
     return _topicRestricted;
 }
+
+

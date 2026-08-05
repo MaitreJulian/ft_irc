@@ -1,0 +1,227 @@
+*This project has been created as part of the 42 curriculum by jvenkata, fhanuise.
+
+# ft_irc
+
+A lightweight Internet Relay Chat (IRC) server written in **C++98**.
+
+---
+
+# Description
+
+`ft_irc` is a networking project whose objective is to implement an IRC server compatible with a standard IRC client.
+
+The server communicates using the IRC protocol over TCP/IP and supports multiple clients simultaneously using non-blocking sockets and a single event loop based on `poll()` (or an equivalent mechanism).
+
+The goal of the project is to understand:
+
+* TCP/IP networking
+* Socket programming
+* Event-driven programming
+* The IRC protocol
+* Multi-client server architecture
+* Modern C++ (C++98)
+
+The project implements the mandatory IRC features required by the subject, including client authentication, channel management, private messaging, and channel operator commands.
+
+---
+
+# Features
+
+## Mandatory
+
+* TCP/IP IRC server
+* Multiple simultaneous clients
+* Non-blocking sockets
+* Single `poll()` event loop
+* Password authentication
+* Nickname registration
+* Username registration
+* Channel creation through `JOIN`
+* Public channel messaging
+* Private messaging between users
+* Channel operators
+* IRC-compatible communication with a reference client
+
+## Genral commands
+*  `PRIVMSG`
+*  `JOIN`
+*  `PART`
+
+## Channel operator commands
+
+* `KICK`
+* `INVITE`
+* `TOPIC`
+* `MODE`
+
+Supported channel modes:
+
+* `i` — Invite-only channel
+* `t` — Topic restricted to operators
+* `k` — Channel password
+* `o` — Give/remove operator privileges
+* `l` — User limit
+
+# Requirements
+
+* C++98
+* Linux
+* Make
+* A compatible IRC client (for example HexChat)
+
+
+# Usage
+
+Start the server:
+
+```bash
+./ircserv <port> <password>
+```
+
+Example:
+
+```bash
+./ircserv 6667 mypassword
+```
+
+---
+
+# Connecting with HexChat
+
+1. Create a new network.
+2. Set the server address to:
+
+```
+127.0.0.1/<port>
+```
+
+Example:
+
+```
+127.0.0.1/6667
+```
+
+3. Configure:
+
+* Nickname
+* Username
+* Server password
+
+4. Connect to the server.
+
+---
+
+# Example IRC Commands
+
+Join a channel:
+
+```text
+JOIN #42
+```
+
+or from HexChat:
+
+```text
+/join #42
+```
+
+Send a message:
+
+```text
+PRIVMSG #42 :Hello everyone!
+```
+
+or simply type your message inside the channel window.
+
+Private message:
+
+```text
+PRIVMSG Alice :Hello!
+```
+
+---
+
+# Technical Overview
+
+The server is based on an event-driven architecture.
+
+Main components:
+
+* **Server**
+
+  * Socket creation
+  * Connection management
+  * Event loop (`poll`)
+  * Command dispatching
+
+* **Client**
+
+  * Authentication state
+  * Nickname
+  * Username
+  * Receive buffer
+
+* **Channel**
+
+  * Member management
+  * Operators
+  * Topic
+  * Channel modes
+
+Incoming TCP packets are accumulated in a client buffer until a complete IRC command ending with `\r\n` is received. Commands are then parsed and executed.
+
+---
+
+# Resources
+
+## IRC
+
+* RFC 1459 – Internet Relay Chat Protocol
+* RFC 2810 – IRC Architecture
+* RFC 2812 – Internet Relay Chat: Client Protocol
+
+## Socket Programming
+
+* Beej's Guide to Network Programming
+* Linux `man` pages:
+
+  * `socket`
+  * `bind`
+  * `listen`
+  * `accept`
+  * `recv`
+  * `send`
+  * `poll`
+
+## C++
+
+* cppreference.com
+* ISO C++98 documentation
+
+---
+
+# AI Usage
+
+AI was used as a learning and productivity tool during the development of this project.
+
+It was primarily used for:
+
+* Understanding the IRC protocol
+* Understanding socket programming concepts
+* Learning how `poll()` works
+* Clarifying TCP/IP networking behavior
+* Reviewing architectural decisions
+* Explaining C++98 language features
+* Reviewing code for potential issues
+* Drafting documentation
+
+All generated explanations and suggestions were reviewed, tested, and adapted before being integrated into the project. AI was not used as a substitute for understanding the implemented code.
+
+---
+
+# Authors
+
+* jvenkata
+* fhanuise
+
+

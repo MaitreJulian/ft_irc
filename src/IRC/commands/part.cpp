@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fhanuise <fhanuise@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 17:27:47 by fhanuise          #+#    #+#             */
-/*   Updated: 2026/08/04 17:27:48 by fhanuise         ###   ########.fr       */
+/*   Updated: 2026/08/05 16:08:02 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,23 @@ void Server::handlePart(std::vector<std::string> s_command, int fd)
         broadcastToChannel(channel, partMsg);
         channel->removeUser(client);
         client->leave(channel);
+        if (channel->getOperators().empty())
+        {
+            if (!channel->getUsers().empty())
+            {
+                std::set<Client*>::iterator uit = channel->getUsers().begin();
+                std::set<Client*>::iterator uite = channel->getUserList().end();
+                channel->addOperator(*uit);
+                std::string names;
+                for (; uit != uite; ++uit)
+                {
+                    if (channel->isOperator(*uit))
+                        names += "@";
+                    names += (*uit)->getNickname() + " ";
+                }
+                sendNumericReply(fd, "353", "= " + channel_name + " :" + names);
+                sendNumericReply(fd, "366", channel_name + " :End of /NAMES list");
+            }
+        }
     }
 }

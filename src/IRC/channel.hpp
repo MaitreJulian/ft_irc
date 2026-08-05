@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fhanuise <fhanuise@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: julian <julian@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:39:33 by fhanuise          #+#    #+#             */
-/*   Updated: 2026/08/04 17:28:09 by fhanuise         ###   ########.fr       */
+/*   Updated: 2026/08/05 15:27:03 by julian           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ class Channel
         const std::string&  getName() const;
         const std::string&  getTopic() const;
         const std::string&  getPassword() const;
+        const std::set<Client*> getOperators() const;
+        const std::set<Client*> getUsers() const;
         bool                isInviteOnly() const;
         int                 getUserLimit() const;
         size_t              getUserCount() const;
